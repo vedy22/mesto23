@@ -1,73 +1,60 @@
-class Card {
-  constructor(name, link, cardSelector, { handleCardClick }) {
-    this._name = name;
-    this._link = link;
-    this._alt = name;
-    this._cardSelector = cardSelector;
+export default class Card {
+  constructor(userData, cardData, templateSelector, handleCardClick, handleDeleteClick, handleLikeClick, handleDislikeClick) {
+    this._templateSelector = templateSelector;
+    this._cardData = cardData;
+    this._name = cardData.name;
+    this._link = cardData.link;
+    this._likes = cardData.likes;
     this._handleCardClick = handleCardClick;
-    this._element = this._getTemplate(); // Запишем разметку в поле _element
-    this._cardImage = this._element.querySelector(".card__image"); // картинка по селектору
-    this._likeButton = this._element.querySelector(".card__btn_cliked"); // кнопка лайка по селектору
+    this._ownerId = cardData.owner._id;
+    this._cardId = cardData._id;
+    this._handleDeleteClick = handleDeleteClick;
+    this._handleLikeClick = handleLikeClick;
+    this._handleDislikeClick = handleDislikeClick;
+    this._userId = userData._id;
   }
 
-  // метод _getTemplate - вернем разметку из template-элемента
   _getTemplate() {
-    return document
-      .querySelector(this._cardSelector) // забираем разметку из HTML и клонируем элемент
-      .content.querySelector(".card")
-      .cloneNode(true);
+    const cardElement = document.getElementById(this._templateSelector).content.firstElementChild.cloneNode(true);
+    return cardElement;
   }
 
-  //  метод renderCard - подготовит карточку к публикации
-  renderCard() {
-    // Добавим данные
+  _setEventListeners() {
+    this._likeButton.addEventListener('click', () => {this._handleLikeClick(this._cardId)});
+
+    this._removeButton.addEventListener('click', () => this._handleDeleteClick(this._element, this._cardId));
+
+    this._cardImage.addEventListener('click', () => this._handleCardClick());
+  }
+
+  createCard() {
+    this._element = this._getTemplate();
+    this._likeButton = this._element.querySelector('.places__like-button');
+    this._cardImage = this._element.querySelector('.places__image');
+    this._removeButton = this._element.querySelector('.places__remove-button');
+    this._setEventListeners();
+
     this._cardImage.src = this._link;
     this._cardImage.alt = this._name;
-    this._element.querySelector(".card__title").textContent = this._name;
-    this._setEventListeners(); // добавляем обработчик
+    this._element.querySelector('.places__like-counter').textContent = this._likes.length
+    this._element.querySelector('.places__text').textContent = this._name;
+    if (this._ownerId !== this._userId) {
+      this._removeButton.classList.add('places__remove-button_hidden')
+    }
+    
+    if (this.isLiked(this._cardData)) {
+      this._likeButton.classList.add('places__like-button_active');
+    }
 
-    // Вернём элемент наружу
-    return this._element;
+    return this._element
   }
 
-  // метод добавления слушателя
-  _setEventListeners() {
-    // Удаление карточки
-    // Находим селектор кнопки удаления
-    // Вешаем событие клика
-    // Возвращаем метод _deleteCard
-    this._element
-      .querySelector(".card__btn_action_del")
-      .addEventListener("click", () => {
-        this._deleteCardBtn();
-      });
-
-    // Лайк карточки
-    // Находим селектор кнопки лайка
-    // Вешаем событие клика
-    // Возвращаем метод _handlelikeButton
-    this._likeButton.addEventListener("click", () => {
-      this._handleLikeButton();
-    });
-
-    // Открытие попапа карточки
-
-    this._cardImage.addEventListener("click", () => {
-      this._openPopupWithImage();
-    });
+  likeCard(card) {
+    this._likeButton.classList.toggle('places__like-button_active');
+    this._element.querySelector('.places__like-counter').textContent = card.likes.length    
   }
 
-  // метод лайка карточки
-  _handleLikeButton() {
-    this._likeButton.classList.toggle("card__btn_action_like"); // при каждом нажатии меняется класс
-  }
-  _deleteCardBtn() {
-    this._element.remove(); // удаляем элемент из DOM
-    this._element = null;
-  }
-
-  _openPopupWithImage() {
-    this._handleCardClick(this._name, this._link);
+  isLiked(card) {
+    return card.likes.some(like => like._id === this._userId)
   }
 }
-export { Card };

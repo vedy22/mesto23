@@ -1,39 +1,38 @@
 import Popup from "./Popup.js";
 
-export class PopupWithForm extends Popup {
-  constructor({ popupSelector, handleSubmit }) {
+export default class PopupWithForm extends Popup {
+  constructor(popupSelector, handleProfileFormSubmit) {
     super(popupSelector);
-    this._handleSubmit = handleSubmit;
-    this._popupForm = this._popup.querySelector(".popup__form");
-    this._inputList = this._popupForm.querySelectorAll(".popup__input");
+    this._handleProfileFormSubmit = handleProfileFormSubmit;
+    this._inputList = this._popup.querySelectorAll('.popup__input');
+    this._form = this._popup.querySelector('.popup__form');
+    this._submitButton = this._popup.querySelector('.popup__submit-button');
   }
 
-  // метод который собирает данные всех полей формы
-  _getInputVaiues() {
-    // создаём пустой объект
-    this._formValues = {};
-    // добавляем в этот объект значения всех полей
-    this._inputList.forEach((input) => {
-      this._formValues[input.name] = input.value;
-    });
+  _getInputValues() { 
+    const data = {};
+    this._inputList.forEach(input => data[input.name] = input.value);
+    return data;
+  }
 
-    // возвращаем объект значений
-    return this._formValues;
+  renderLoading(isLoading) {
+    if(isLoading) {
+      this._submitButton.textContent = 'Сохранение...';
+    }else {
+      this._submitButton.textContent = 'Сохранить';
+    }
   }
 
   setEventListeners() {
     super.setEventListeners();
-    this._popupForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      // добавим вызов функции _handleSubmit
-      // передадим ей объект — результат работы _getInputValues
-      this._handleSubmit(this._getInputVaiues());
-      this.close();
-    });
+    this._form.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      this._handleProfileFormSubmit(this._getInputValues());
+    })
   }
 
   close() {
     super.close();
-    this._popupForm.reset();
+    this._form.reset();
   }
 }

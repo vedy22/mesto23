@@ -1,23 +1,26 @@
 .popup__input {
-  height: 37px;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 17px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  box-sizing: border-box;
-  width: 100%;
-  color: #000;
-  border: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  padding: 13px 0 0;
-  margin: 0 0 20px;
-  display: flex;
-  align-items: center;
+    width: 358px;
+    margin: 0 auto 28px;
+    border: 0;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 17px;
+    padding-bottom: 10px;
+    position: relative;
 }
 
-.popup__item:focus {
-  outline: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+.popup__input::-webkit-input-placeholder {
+    color: #000;
+}
+.popup__input::-moz-placeholder {
+    color: #000;
+}
+.popup__input::-ms-input-placeholder {
+    color: #c000;
+}
+
+@media screen and (max-width: 550px) {
+    .popup__input {
+        width: 238px;
+    }
 }
