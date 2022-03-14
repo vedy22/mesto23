@@ -1,7 +1,8 @@
 export class Api {
-  constructor({url, token}) {
+  constructor({url, headers, token}) {
     this._url = url;
     this._token = token;
+    this._headers = headers;
   }
 
   _checkRes(res) {    //Проверка на наличие ошибок
@@ -14,10 +15,7 @@ export class Api {
   getInitialCards() {      //Загрузка карточек с сервера
     return fetch(`${this._url}/cards`, {
       method: 'GET',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
       .then(res => this._checkRes(res))
   }
@@ -25,10 +23,7 @@ export class Api {
   getUserData() {      //Загрузка информации о пользователе с сервера
     return fetch(`${this._url}/users/me`, {
       method: 'GET',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
     .then(res => this._checkRes(res))
   }
@@ -36,10 +31,7 @@ export class Api {
   sendUserData(data) {   //отправление данных пользователя на сервер
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
-      headers: {
-        authorization: '37537b48-8cd1-46df-bdda-50c6c5fa0f5b',
-        'Content-Type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         name: data.name,
         about: data.about
@@ -51,10 +43,7 @@ export class Api {
   sendNewCard(data) {   //отправление новой карточки
     return fetch(`${this._url}/cards`, {
       method: 'POST',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         name: data.name,
         link: data.link
@@ -66,10 +55,7 @@ export class Api {
   deleteCard(cardId) {   //удаление карточки 
     return fetch(`${this._url}/cards/${cardId}`, {
       method: 'DELETE',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
     .then(res => this._checkRes(res))
   }
@@ -77,10 +63,7 @@ export class Api {
   likeCard(cardId) {   //поставить лайк карточке
     return fetch(`${this._url}/cards/likes/${cardId}`, {
       method: 'PUT',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
     .then(res => this._checkRes(res))
   }
@@ -88,10 +71,7 @@ export class Api {
   dislikeCard(cardId) {  //снять лайк с карточки
     return fetch(`${this._url}/cards/likes/${cardId}`, {
       method: 'DELETE',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      }
+      headers: this._headers
     })
     .then(res => this._checkRes(res))
   }  
@@ -99,10 +79,7 @@ export class Api {
   updateAvatar(link) {   //обновление аватара
     return fetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
-      headers: {
-        authorization: this._token,
-        'Content-Type': 'application/json'
-      },
+      headers: this._headers,
       body: JSON.stringify({
         avatar: link
       })

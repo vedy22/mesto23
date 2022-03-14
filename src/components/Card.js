@@ -11,7 +11,7 @@ export default class Card {
     this._handleDeleteClick = handleDeleteClick;
     this._handleLikeClick = handleLikeClick;
     this._handleDislikeClick = handleDislikeClick;
-    this._userId = userData._id;
+    this._userId = userData._id;    
   }
 
   _getTemplate() {
@@ -32,6 +32,7 @@ export default class Card {
     this._likeButton = this._element.querySelector('.places__like-button');
     this._cardImage = this._element.querySelector('.places__image');
     this._removeButton = this._element.querySelector('.places__remove-button');
+    this._likeCounter = this._element.querySelector('.places__like-counter');
     this._setEventListeners();
 
     this._cardImage.src = this._link;
@@ -51,7 +52,7 @@ export default class Card {
 
   likeCard(card) {
     this._likeButton.classList.toggle('places__like-button_active');
-    this._element.querySelector('.places__like-counter').textContent = card.likes.length    
+    this._likeCounter.textContent = card.likes.length    
   }
 
   isLiked(card) {

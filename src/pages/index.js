@@ -55,7 +55,10 @@ function generateCard(userData, data) {
 
 const api = new Api({
   url: "https://mesto.nomoreparties.co/v1/cohort36",
-  token: "37537b48-8cd1-46df-bdda-50c6c5fa0f5b",
+  headers: {
+    authorization: '37537b48-8cd1-46df-bdda-50c6c5fa0f5b',
+    'Content-Type': 'application/json'
+  }
 });
 
 const formInfo = new UserInfo(
@@ -64,16 +67,16 @@ const formInfo = new UserInfo(
   ".profile__avatar"
 );
 
-const formPopup = new PopupWithForm(".popup_type_edit", (data) => {
-  formPopup.renderLoading(true);
+const profilePopup = new PopupWithForm(".popup_type_edit", (data) => {
+  profilePopup.renderLoading(true);
   api
     .sendUserData(data)
     .then((data) => {
       formInfo.setUserInfo(data);
-      formPopup.close();
+      profilePopup.close();
     })
     .catch((err) => console.log(err))
-    .finally(() => formPopup.renderLoading(false));
+    .finally(() => profilePopup.renderLoading(false));
 });
 
 const addImagePopup = new PopupWithForm(".popup_type_add-card", (data) => {
@@ -107,7 +110,8 @@ const popupConfirm = new PopupDeleteImage(".popup_type_confirm", (card, id) => {
   api.deleteCard(id).then(() => {
     card.remove();
     popupConfirm.close();
-  });
+  })
+  .catch((err) => console.log(err));
 });
 
 Promise.all([api.getInitialCards(), api.getUserData()])
@@ -134,7 +138,7 @@ Promise.all([api.getInitialCards(), api.getUserData()])
 
 popupImage.setEventListeners();
 addImagePopup.setEventListeners();
-formPopup.setEventListeners();
+profilePopup.setEventListeners();
 popupConfirm.setEventListeners();
 avatarPopup.setEventListeners();
 
@@ -147,7 +151,7 @@ popupEditButton.addEventListener("click", () => {
   const inputData = formInfo.getUserInfo();
   nameInput.value = inputData.name;
   jobInput.value = inputData.profession;
-  formPopup.open();
+  profilePopup.open();
 });
 
 addButton.addEventListener("click", () => {
